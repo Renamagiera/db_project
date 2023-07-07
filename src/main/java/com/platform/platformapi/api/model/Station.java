@@ -13,6 +13,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Station {
 
@@ -20,20 +22,20 @@ public class Station {
     public String name;
 
     public ArrayList<String> tracks = new ArrayList<>();
-    public ArrayList<String> trains = new ArrayList<>();
+    public Map<String, ArrayList<Integer>> trains = new HashMap<>();
     public ArrayList<Integer> wagons = new ArrayList<>();
     public String section;
 
     private static final String FILENAME = "src/main/resources/xml/FF_2017-12-01_10-47-17.xml";
     public NodeList trackNodeList;
+    public NodeList trainNodeList;
+    public NodeList wagonNodeList;
 
     public Station() {
         this.readDataFromXML();
     }
 
     // getter & setter
-
-
     public String getRil100() {
         return ril100;
     }
@@ -56,14 +58,6 @@ public class Station {
 
     public void setTracks(ArrayList<String> tracks) {
         this.tracks = tracks;
-    }
-
-    public ArrayList<String> getTrains() {
-        return trains;
-    }
-
-    public void setTrains(ArrayList<String> trains) {
-        this.trains = trains;
     }
 
     public ArrayList<Integer> getWagons() {
@@ -90,6 +84,30 @@ public class Station {
         this.trackNodeList = trackNodeList;
     }
 
+    public Map<String, ArrayList<Integer>> getTrains() {
+        return trains;
+    }
+
+    public void setTrains(Map<String, ArrayList<Integer>> trains) {
+        this.trains = trains;
+    }
+
+    public NodeList getTrainNodeList() {
+        return trainNodeList;
+    }
+
+    public void setTrainNodeList(NodeList trainNodeList) {
+        this.trainNodeList = trainNodeList;
+    }
+
+    public NodeList getWagonNodeList() {
+        return wagonNodeList;
+    }
+
+    public void setWagonNodeList(NodeList wagonNodeList) {
+        this.wagonNodeList = wagonNodeList;
+    }
+
     public void readDataFromXML() {
         // Instantiate the Factory
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -109,10 +127,19 @@ public class Station {
             for (int i = 0; i < this.trackNodeList.getLength(); i++) {
                 Node node = this.trackNodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
+
                     Element element = (Element) node;
                     this.tracks.add(element.getElementsByTagName("name").item(0).getTextContent());
+
+                    NodeList trains = element.getElementsByTagName("trainNumber");
+                    ArrayList<Integer> trainNumbers = new ArrayList<>();
+                    for (int j = 0; j < trains.getLength(); j++) {
+                        trainNumbers.add(Integer.parseInt(trains.item(j).getTextContent()));
+                    }
+                    this.trains.put(element.getElementsByTagName("name").item(0).getTextContent(), trainNumbers);
                 }
             }
+
 
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();

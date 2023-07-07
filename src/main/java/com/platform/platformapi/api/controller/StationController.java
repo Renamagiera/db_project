@@ -21,7 +21,7 @@ public class StationController {
     public String getSection(@RequestParam String ril100) {
         Station station = stationService.getSection(ril100);
         if (!(station == null)) {
-            return station.getName();
+            return station.getTrains().get("Gleis 2").get(1).toString();
         }
         return null;
     }
