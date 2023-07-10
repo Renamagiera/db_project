@@ -18,7 +18,7 @@ public class StationController {
     }
 
     @GetMapping("/station")
-    public ResponseEntity<?> mapReturn(@RequestParam String ril100, @RequestParam String myTrain, @RequestParam String myWaggon) throws Exception {
+    public ResponseEntity<?> mapReturn(@RequestParam String ril100, @RequestParam int myTrain, @RequestParam int myWaggon) throws Exception {
         return ResponseEntity.ok(stationService.getSection(ril100, myTrain, myWaggon));
     }
 

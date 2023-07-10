@@ -14,7 +14,7 @@ public class StationService {
         station = new Station();
     }
 
-    public Map<String, Map<String, ArrayList<String>>> getSection(String ril100, String myTrain, String myWaggon) throws Exception {
+    public Map<String, Map<String, ArrayList<String>>> getSection(String ril100, int myTrain, int myWaggon) throws Exception {
         return this.station.searchInXMLForPlatform(this.station.getDocument(ril100), myTrain, myWaggon);
     }
 

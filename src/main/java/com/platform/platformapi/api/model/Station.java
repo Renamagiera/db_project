@@ -2,6 +2,7 @@ package com.platform.platformapi.api.model;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,7 +25,6 @@ public class Station {
     }
 
     public static Document readXMLDocumentFromFile(String filename) throws Exception {
-
         //Get Document Builder
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -37,7 +37,7 @@ public class Station {
         return document;
     }
 
-    public Map<String, Map<String, ArrayList<String>>> searchInXMLForPlatform(Document doc, String myTrain, String myWaggon) {
+    public Map<String, Map<String, ArrayList<String>>> searchInXMLForPlatform(Document doc, int myTrain, int myWaggon) {
 
         NodeList tracks = doc.getElementsByTagName("track");
         Map<String, Map<String, ArrayList<String>>> platformResult = new HashMap<>();
@@ -49,14 +49,16 @@ public class Station {
                 Element trainElement = (Element) trainList.item(j);
                 NodeList trainNumberList = trainElement.getElementsByTagName("trainNumber");
                 for (int k = 0; k < trainNumberList.getLength(); k++) {
-                    if (trainNumberList.item(0).getTextContent().equals(myTrain)) {
+                    int trainNumber = trainNumberList.item(0).getTextContent().isEmpty() ? -1 : Integer.parseInt(trainNumberList.item(0).getTextContent());
+                    if (trainNumber == myTrain) {
                         // train found
                         NodeList waggonList = trainElement.getElementsByTagName("waggon");
                         Map<String, ArrayList<String>> platforms = new HashMap<>();
                         for (int l = 0; l < waggonList.getLength(); l++) {
                             Element waggonElement = (Element) waggonList.item(l);
                             NodeList waggonNumberList = waggonElement.getElementsByTagName("number");
-                            if (waggonNumberList.item(0).getTextContent().equals(myWaggon)) {
+                            int waggonNumber = waggonNumberList.item(0).getTextContent().isEmpty() ? -1 : Integer.parseInt(waggonNumberList.item(0).getTextContent());
+                            if (waggonNumber == myWaggon) {
                                 // train & waggon found
                                 ArrayList<String> identifier = new ArrayList<>();
                                 for (int m = 0; m < waggonElement.getElementsByTagName("identifier").getLength(); m++) {
