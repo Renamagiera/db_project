@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class StationController {
 
-    private StationService stationService;
+    private final StationService stationService;
 
     @Autowired
     public StationController(StationService stationService) {
@@ -18,7 +18,7 @@ public class StationController {
     }
 
     @GetMapping("/station")
-    public ResponseEntity<?> mapReturn(@RequestParam String ril100, @RequestParam String myTrain, @RequestParam String myWaggon) {
+    public ResponseEntity<?> mapReturn(@RequestParam String ril100, @RequestParam String myTrain, @RequestParam String myWaggon) throws Exception {
         return ResponseEntity.ok(stationService.getSection(ril100, myTrain, myWaggon));
     }
 
