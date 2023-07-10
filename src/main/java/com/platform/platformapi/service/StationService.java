@@ -8,15 +8,14 @@ import java.util.Map;
 @Service
 public class StationService {
 
-    private Station station;
+    private final Station station;
 
-    public StationService() throws Exception {
+    public StationService() {
         station = new Station();
     }
 
-    public Map<String, Map<String, ArrayList<String>>> getSection(String ril100, String myTrain, String myWaggon) {
-        // search for xml-File
-        return this.station.searchForPlatform(station.getDocument(), myTrain, myWaggon);
+    public Map<String, Map<String, ArrayList<String>>> getSection(String ril100, String myTrain, String myWaggon) throws Exception {
+        return this.station.searchInXMLForPlatform(this.station.getDocument(ril100), myTrain, myWaggon);
     }
 
 }
