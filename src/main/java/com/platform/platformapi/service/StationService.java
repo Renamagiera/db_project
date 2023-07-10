@@ -2,28 +2,21 @@ package com.platform.platformapi.service;
 
 import com.platform.platformapi.api.model.Station;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 @Service
 public class StationService {
 
-    private List<Station> stationList;
+    private Station station;
 
-    public StationService() {
-        stationList = new ArrayList<>();
-        Station station1 = new Station();
-        stationList.add(station1);
+    public StationService() throws Exception {
+        station = new Station();
     }
 
-    public Station getSection(String ril100) {
-        for (Station station : stationList) {
-            if (ril100.equals(station.getRil100())) {
-                return station;
-            }
-        }
-        return null;
+    public Map<String, Map<String, ArrayList<String>>> getSection(String ril100, String myTrain, String myWaggon) {
+        // search for xml-File
+        return this.station.searchForPlatform(station.getDocument(), myTrain, myWaggon);
     }
 
 }

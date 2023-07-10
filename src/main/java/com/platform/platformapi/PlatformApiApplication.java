@@ -1,6 +1,5 @@
 package com.platform.platformapi;
 
-import com.platform.platformapi.api.model.Station;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
