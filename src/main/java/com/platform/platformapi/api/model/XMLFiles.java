@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class XMLFiles {
-
     private final Map<String, String> ril100Map;
     private final String dir = "src/main/resources/xml/";
 
@@ -29,5 +28,4 @@ public class XMLFiles {
     public String searchForRil100Key(String key) {
         return "xml/" + this.ril100Map.get(key);
     }
-
 }
