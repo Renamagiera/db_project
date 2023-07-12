@@ -1,21 +1,17 @@
-package org.example;
+package com.platform.platformapi.api.model;
+
+import java.util.ArrayList;
 
 public class Track {
 
     private String name;
     private int number;
-    private Train[] trains;
-    private String[] sections;
+    private ArrayList<Train> trains;
+    private ArrayList<String> sections;
 
     public Track() {
-
-    }
-
-    public Track(String name, int number) {
-        this.name = name;
-        this.number = number;
-        //this.trains = trains;
-        //this.sections = sections;
+        this.trains = new ArrayList<>();
+        this.sections = new ArrayList<>();
     }
 
     public String getName() {
@@ -34,19 +30,19 @@ public class Track {
         this.number = number;
     }
 
-    public Train[] getTrains() {
+    public ArrayList<Train> getTrains() {
         return trains;
     }
 
-    public void setTrains(Train[] trains) {
+    public void setTrains(ArrayList<Train> trains) {
         this.trains = trains;
     }
 
-    public String[] getSections() {
+    public ArrayList<String> getSections() {
         return sections;
     }
 
-    public void setSections(String[] sections) {
+    public void setSections(ArrayList<String> sections) {
         this.sections = sections;
     }
 }

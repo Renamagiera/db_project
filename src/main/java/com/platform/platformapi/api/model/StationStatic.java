@@ -2,19 +2,18 @@ package com.platform.platformapi.api.model;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.*;
 
-public class Station {
+public class StationStatic {
 
     private final String dir = "src/main/resources/xml";
     private final Map<String, String> ril100Map;
 
-    public Station() {
+    public StationStatic() {
         String[] filenameList = listFiles(this.dir);
         this.ril100Map = new HashMap<>();
         this.splitStrings(filenameList);
