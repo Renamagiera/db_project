@@ -1,99 +1,88 @@
 package com.platform.platformapi.api.model;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.util.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@XmlRootElement
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Station {
 
-    private final String dir = "src/main/resources/xml";
-    private final Map<String, String> ril100Map;
+    private String shortcode;
+    private String name;
+    private List<Tracks> tracks;
 
     public Station() {
-        String[] filenameList = listFiles(this.dir);
-        this.ril100Map = new HashMap<>();
-        this.splitStrings(filenameList);
     }
 
-    public Document getDocument(String ril100) throws Exception {
-        return readXMLDocumentFromFile(this.searchForRil100Key(ril100));
+    public Station(String shortcode, String name, List<Tracks> tracks) {
+        this.shortcode = shortcode;
+        this.name = name;
+        this.tracks = tracks;
     }
 
-    public static Document readXMLDocumentFromFile(String filename) throws Exception {
-        //Get Document Builder
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-
-        //Build Document
-        Document document = builder.parse(new File(filename));
-
-        //Normalize the XML Structure;
-        document.getDocumentElement().normalize();
-        return document;
+    public String getShortcode() {
+        return shortcode;
     }
 
-    public Map<String, Map<String, ArrayList<String>>> searchInXMLForPlatform(Document doc, int myTrain, int myWaggon) {
+    public void setShortcode(String shortcode) {
+        this.shortcode = shortcode;
+    }
 
-        NodeList tracks = doc.getElementsByTagName("track");
-        Map<String, Map<String, ArrayList<String>>> platformResult = new HashMap<>();
+    public String getName() {
+        return name;
+    }
 
-        for (int i = 0; i < tracks.getLength(); i++) {
-            Element trackElement = (Element) tracks.item(i);
-            NodeList trainList = trackElement.getElementsByTagName("train");
-            for (int j = 0; j < trainList.getLength(); j++) {
-                Element trainElement = (Element) trainList.item(j);
-                NodeList trainNumberList = trainElement.getElementsByTagName("trainNumber");
-                for (int k = 0; k < trainNumberList.getLength(); k++) {
-                    int trainNumber = trainNumberList.item(0).getTextContent().isEmpty() ? -1 : Integer.parseInt(trainNumberList.item(0).getTextContent());
-                    if (trainNumber == myTrain) {
-                        // train found
-                        NodeList waggonList = trainElement.getElementsByTagName("waggon");
-                        Map<String, ArrayList<String>> platforms = new HashMap<>();
-                        for (int l = 0; l < waggonList.getLength(); l++) {
-                            Element waggonElement = (Element) waggonList.item(l);
-                            NodeList waggonNumberList = waggonElement.getElementsByTagName("number");
-                            int waggonNumber = waggonNumberList.item(0).getTextContent().isEmpty() ? -1 : Integer.parseInt(waggonNumberList.item(0).getTextContent());
-                            if (waggonNumber == myWaggon) {
-                                // train & waggon found
-                                ArrayList<String> identifier = new ArrayList<>();
-                                for (int m = 0; m < waggonElement.getElementsByTagName("identifier").getLength(); m++) {
-                                    identifier.add(waggonElement.getElementsByTagName("identifier").item(m).getTextContent());
-                                /* test for file-name
-                                identifier.add(this.searchForRil100Key(ril100));*/
-                                }
-                                platforms.put("sections", identifier);
-                                platformResult.put(trackElement.getElementsByTagName("name").item(0).getTextContent(), platforms);
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Tracks> getTracks() {
+        return tracks;
+    }
+
+    @XmlElement(name = "track")
+    public void setTracks(List<Tracks> tracks) {
+        this.tracks = tracks;
+    }
+
+    public Map<String, Map<String, ArrayList<String>>> searchForPlatform(int myTrainNumber, int myWaggon) {
+        String trainNumber = String.valueOf(myTrainNumber);
+        String waggon = String.valueOf(myWaggon);
+
+        return this.searchForTrainsWithGivenParam(trainNumber, waggon);
+    }
+
+    private Map<String, Map<String, ArrayList<String>>> searchForTrainsWithGivenParam(String myTrainNumber, String myWaggon) {
+        Map<String, Map<String, ArrayList<String>>> resultsMap = new HashMap<>();
+        for (Tracks track : tracks) {
+            for (Train train : track.getTrains()) {
+                for (TrainNumber trainNr : train.trainNumbers) {
+                    if (trainNr.getTrainNumber().equals(myTrainNumber)) {
+                        for (Waggon waggon : train.waggons) {
+                            if (waggon.getNumber().equals(myWaggon)) {
+                                this.handleResults(waggon, track, resultsMap);
                             }
                         }
                     }
                 }
             }
         }
-        return platformResult;
+        return resultsMap;
     }
 
-    public String[] listFiles(String dir) {
-        File directory = new File(dir);
-        return directory.list();
-    }
-
-    public void splitStrings(String[] fileList) {
-        for (String file : fileList) {
-            String[] split = file.split("_");
-            this.ril100Map.put(split[0], file);
+    private void handleResults(Waggon waggon, Tracks track, Map<String, Map<String, ArrayList<String>>> resultsMap) {
+        ArrayList<String> sec = new ArrayList<>();
+        for (Identifier identifier : waggon.getSections()) {
+            sec.add(identifier.getIdentifier());
         }
-    }
-
-    public String searchForRil100Key(String key) {
-        return this.dir + "/" + this.ril100Map.get(key);
-    }
-
-    public void sort(Map<String, String> ril100Map) {
-        // TO-DO: Sorting, to get Values faster?
+        Map<String, ArrayList<String>> sections = new HashMap<>();
+        sections.put("sections", sec);
+        resultsMap.put(track.getName(), sections);
     }
 }
