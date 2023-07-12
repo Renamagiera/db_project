@@ -1,13 +1,10 @@
 package com.platform.platformapi.api.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Train {
-
     List<TrainNumber> trainNumbers;
     List<Waggon> waggons;
 
