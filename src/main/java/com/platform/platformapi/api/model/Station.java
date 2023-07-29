@@ -92,6 +92,6 @@ public class Station {
         }
         Map<String, ArrayList<String>> sections = new HashMap<>();
         sections.put("sections", sec);
-        resultsMap.put(track.getName(), sections);
+        resultsMap.put(track.getName().replace(" ", "_"), sections);
     }
 }
