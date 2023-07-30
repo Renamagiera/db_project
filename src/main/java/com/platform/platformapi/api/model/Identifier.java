@@ -1,5 +1,8 @@
 package com.platform.platformapi.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Identifier {
     private String identifier;
 

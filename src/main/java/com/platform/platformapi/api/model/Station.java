@@ -61,37 +61,32 @@ public class Station {
      * It calls the method "searchForTrainsWithGivenParams",
      * in which the Station object is searched through multiple loops for the given parameters.
      * */
-    public Map<String, Map<String, ArrayList<String>>> searchForPlatform(int myTrainNumber, int myWaggon) {
+    public Map<String, Map<String, List<String>>> searchForPlatform(int myTrainNumber, int myWaggon) {
         String trainNumber = String.valueOf(myTrainNumber);
         String waggon = String.valueOf(myWaggon);
         return this.searchForTrainsWithGivenParam(trainNumber, waggon);
     }
 
-    private Map<String, Map<String, ArrayList<String>>> searchForTrainsWithGivenParam(String myTrainNumber, String myWaggon) {
-        Map<String, Map<String, ArrayList<String>>> resultsMap = new HashMap<>();
-        for (Tracks track : tracks) {
-            for (Train train : track.getTrains()) {
-                for (TrainNumber trainNr : train.trainNumbers) {
-                    if (trainNr.getTrainNumber().equals(myTrainNumber)) {
-                        for (Waggon waggon : train.waggons) {
-                            if (waggon.getNumber().equals(myWaggon)) {
-                                this.handleResults(waggon, track, resultsMap);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    private Map<String, Map<String, List<String>>> searchForTrainsWithGivenParam(String myTrainNumber, String myWaggon) {
+        Map<String, Map<String, List<String>>> resultsMap = new HashMap<>();
+        tracks.forEach((track) ->
+                track.getTrains().forEach(train ->
+                        train.trainNumbers.forEach(trainNr -> {
+                                    if (trainNr.getTrainNumber().equals(myTrainNumber)) {
+                                        train.waggons.forEach(waggon -> {
+                                            if (waggon.getNumber().equals(myWaggon)) {
+                                                resultsMap.put(track.getName().replace(" ", "_"), this.handleResults(waggon));
+                                            }});}})));
         return resultsMap;
     }
 
-    private void handleResults(Waggon waggon, Tracks track, Map<String, Map<String, ArrayList<String>>> resultsMap) {
-        ArrayList<String> sec = new ArrayList<>();
+    private Map<String, List<String>> handleResults(Waggon waggon) {
+        List<String> identifiers = new ArrayList<>();
+        Map<String, List<String>> sections = new HashMap<>();
         for (Identifier identifier : waggon.getSections()) {
-            sec.add(identifier.getIdentifier());
+            identifiers.add(identifier.getIdentifier());
         }
-        Map<String, ArrayList<String>> sections = new HashMap<>();
-        sections.put("sections", sec);
-        resultsMap.put(track.getName().replace(" ", "_"), sections);
+        sections.put("sections", identifiers);
+        return sections;
     }
 }
