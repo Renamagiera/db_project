@@ -5,10 +5,11 @@ import com.platform.platformapi.api.controller.StationController;
 import com.platform.platformapi.api.model.Station;
 import com.platform.platformapi.api.model.XMLFiles;
 import org.springframework.stereotype.Service;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -23,7 +24,7 @@ public class StationService {
      * At this point, the mapping is called using the Jackson framework.
      * The Station class is passed as a stream.
      * */
-    public Map<String, Map<String, ArrayList<String >>> getSection(String ril100, int myTrain, int myWaggon) throws Exception {
+    public Map<String, Map<String, List<String>>> getSection(String ril100, int myTrain, int myWaggon) throws Exception {
 
         InputStream xmlResource = StationController.class.getClassLoader().getResourceAsStream(xmlFiles.searchForRil100Key(ril100));
         XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
